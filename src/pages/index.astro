@@ -19,7 +19,7 @@ import Layout from '../layouts/Layout.astro';
 			if(input.value.length < input.minLength)
 				return;
 
-			location.replace("http://localhost:4321/redirect?state=" + input.value)
+			location.replace("/redirect?state=" + input.value)
 		}
 	});
 </script>

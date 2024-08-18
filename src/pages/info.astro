@@ -5,6 +5,8 @@ import { type Tokens } from '../types/tokens';
 
 const clientID = await import.meta.env.CLIENT_ID;
 const clientSecret = await import.meta.env.CLIENT_SECRET;
+const baseURL = await import.meta.env.BASE_URL;
+
 const params = Astro.url.searchParams;
 const finalData = {
 	access_token: "",
@@ -25,7 +27,7 @@ if(params.has("code")){
 			+ "&client_secret=" + clientSecret
 			+ "&code=" + params.get("code")
 			+ "&grant_type=authorization_code"
-			+ "&redirect_uri=http://localhost:4321/info"
+			+ "&redirect_uri=" + baseURL + "info"
 	});
 
 	const tokens = await tokensPost.json() as Tokens;
