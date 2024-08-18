@@ -1,0 +1,106 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { type GetUser } from '../types/user';
+import { type Tokens } from '../types/tokens';
+
+const clientID = await import.meta.env.CLIENT_ID;
+const clientSecret = await import.meta.env.CLIENT_SECRET;
+const params = Astro.url.searchParams;
+const finalData = {
+	access_token: "",
+	refresh_token: "",
+	user: {
+		ID: "",
+		name: "",
+	}
+}
+
+if(params.has("code")){
+	const tokensPost = await fetch("https://id.twitch.tv/oauth2/token", {
+		method: "POST",
+		headers: {
+			"Content-type": "application/x-www-form-urlencoded"
+		},
+		body: "client_id=" + clientID
+			+ "&client_secret=" + clientSecret
+			+ "&code=" + params.get("code")
+			+ "&grant_type=authorization_code"
+			+ "&redirect_uri=http://localhost:4321/info"
+	});
+
+	const tokens = await tokensPost.json() as Tokens;
+	const access_token = tokens.access_token;
+	const refresh_token = tokens.refresh_token;
+
+	const userGet = await fetch("https://api.twitch.tv/helix/users?login=" + params.get("state"), {
+		headers: {
+			"Authorization": "Bearer " + access_token,
+			"Client-Id": clientID
+		}
+	});
+
+	const user = await userGet.json() as GetUser;
+	
+	finalData.access_token = access_token;
+	finalData.refresh_token = refresh_token;
+	finalData.user.ID = user.data[0].id;
+	finalData.user.name = user.data[0].display_name;
+}
+
+---
+
+<Layout title="Cheers4J">
+	<h1 id="h1Element">{finalData.user.name}</h1>
+	<p>
+		Paste this inside <code class="pasteBlock">config/twitch.json</code> in server root folder: <br>
+      <p class="pasteBlock">
+         User ID: <strong id="userID">{finalData.user.ID}</strong>
+         <br>Access Token: <strong id="accessToken">{finalData.access_token}</strong>
+         <br>Refresh Token: <strong id="refreshToken">{finalData.refresh_token}</strong>
+		</p>
+	</p>
+</Layout>
+
+<script>
+	const h1 = document.getElementById("h1Element");
+	const userID = document.getElementById("userID");
+	const accessToken = document.getElementById("accessToken");
+	const refreshToken = document.getElementById("refreshToken");
+
+	// I think theres a better way of doing all of this but IDK.
+	if(h1 != null){
+		if(h1.innerText != "")
+			localStorage.setItem("Name", h1.innerText)
+		h1.innerText = localStorage.getItem("Name") ?? "";
+	}
+
+	if(userID != null){
+		if(userID.innerText != "")
+			localStorage.setItem("ID", userID.innerText)
+		userID.innerText = localStorage.getItem("ID") ?? "";
+	}
+	
+	if(accessToken != null){
+		if(accessToken.innerText != "")
+			localStorage.setItem("Access", accessToken.innerText)
+		accessToken.innerText = localStorage.getItem("Access") ?? "";
+	}
+
+	if(refreshToken != null){
+		if(refreshToken.innerText != "")
+			localStorage.setItem("Refresh", refreshToken.innerText)
+		refreshToken.innerText = localStorage.getItem("Refresh") ?? "";
+	}
+
+	window.history.replaceState(null, document.title, "/info")
+</script>
+
+<style>
+   .pasteBlock {
+		text-align: left;
+      background-color: rgb(33, 33, 33);
+      border: 1px solid rgb(77, 77, 77);
+		border-radius: 3px;
+		padding: 3px;
+   }
+</style>
