@@ -17,7 +17,7 @@ export const GET: APIRoute = async ({ params, request }) => {
             type: "channel.cheer",
             version: "1",
             condition: {
-               broadcaster_user_id: params.get("broadcaster")
+               broadcaster_user_id: params.get("id")
             },
             transport: {
                method: "websocket",
