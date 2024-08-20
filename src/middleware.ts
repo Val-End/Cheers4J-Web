@@ -1,6 +1,6 @@
 import { defineMiddleware } from "astro:middleware";
 const clientID = await import.meta.env.CLIENT_ID;
-const baseURL = await import.meta.env.BASE_URL;
+const baseURL = await import.meta.env.BASE_URI;
 
 export const onRequest = defineMiddleware((ctx, nxt) => {
    if(ctx.url.pathname === "/redirect"){

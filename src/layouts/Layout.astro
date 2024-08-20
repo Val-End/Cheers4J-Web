@@ -19,19 +19,31 @@ const { title } = Astro.props;
 	</head>
 	<body>
 		<main>
+			<div id="bg"/>
 			<slot />
 		</main>
 	</body>
 </html>
 <style is:global>
-	html {
-		font-family: 'Poppins', sans-serif;
+	#bg {
 		position: absolute;
   		inset: 0;
   		z-index: -10;
   		width: 100%;
 		height: 100%;
   		background: radial-gradient(125% 125% at 50% 10%, #000 40%, #63e 100%);
+	}
+
+	html {
+		font-family: 'Poppins', sans-serif;
+	}
+
+	body {
+		overflow: hidden;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		min-height: 100vh;
 	}
 
 	main {
@@ -47,14 +59,6 @@ const { title } = Astro.props;
 		color: white;
 		font-size: 20px;
 		line-height: 1.6;
-	}
-
-	body {
-		overflow: hidden;
-		height: 100%;
-		align-items: center;
-		display: flex;
-		justify-content: center;
 	}
 
 	h1 {

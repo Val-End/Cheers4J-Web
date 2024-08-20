@@ -8,41 +8,79 @@ import Layout from '../layouts/Layout.astro';
 		<strong>Minecraft</strong> mod that adds <strong>Twitch</strong> cheers integration.
 		<br>To get started, put your Twitch username below.
 	</p>
-	<input type="text" id="user-input" placeholder="..." minlength="4">
+	<div id="inputBar">
+		<input type="text" id="user-input" placeholder="..." minlength="4" maxlength="25">
+		<button id="tokensButton">Get Tokens</button>
+	</div>
 </Layout>
 
 <script>
 	const input = document.getElementById("user-input") as HTMLInputElement;
+	const button = document.getElementById("tokensButton") as HTMLButtonElement;
+	const params = new URLSearchParams(location.search);
+	if(params.has("error")) {
+		input.style.backgroundColor = "rgb(66, 11, 11)";
+		input.placeholder = "Error: " + params.get("error");
+	}
 
 	input.addEventListener("keydown", (event) => {
-		if(event.key === "Enter") {
-			if(input.value.length < input.minLength)
-				return;
-
-			location.replace("/redirect?state=" + input.value)
-		}
+		if(event.key === "Enter") 
+			validate()
 	});
+	button.addEventListener("click", (e) => validate());
+
+	function validate() {
+		if(input.value.length >= input.minLength)
+			location.replace("/redirect?state=" + input.value.toLowerCase())
+	}
 </script>
 
 <style>
+	#inputBar {
+		display: flex;
+		justify-content: space-evenly;
+	}
+
 	input {
-		width: 100%;
-		height: 3rem;
+		margin: 5px;
+		padding-left: 10px;
 		background-color: rgb(11, 11, 11);
 		border: 2px solid rgba(77, 77, 77, 0.4);
+		border-radius: 6px;
 		font-size: 1.5rem;
 		color: white;
-		border-radius: 10px;
 		opacity: 0.4;
 		outline: none;
 		transition: opacity 0.5s ease;
 	}
 
-	input:hover {
+	input:hover {	
 		opacity: 1;
 	}
 
 	input:focus {
+		border: 2px solid rgb(169, 51, 238);
 		opacity: 1;
+	}
+
+	#tokensButton {
+		margin: 5px;
+		padding: 10px 20px;
+		background-color: rgb(169, 51, 238);
+		border-radius: 6px;
+		font-size: 1.5rem;
+		color: white;
+		transition: background-color 0.5s ease;
+		border: none;
+	}
+
+	#tokensButton:hover {
+		cursor: pointer;
+		background-color: rgb(108, 40, 218);
+	}
+
+	#tokensButton:active {
+		transition: background-color 0s;
+		background-color: rgb(73, 18, 161);
 	}
 </style>

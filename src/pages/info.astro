@@ -5,7 +5,7 @@ import { type Tokens } from '../types/tokens';
 
 const clientID = await import.meta.env.CLIENT_ID;
 const clientSecret = await import.meta.env.CLIENT_SECRET;
-const baseURL = await import.meta.env.BASE_URL;
+const baseURL = await import.meta.env.BASE_URI;
 
 const params = Astro.url.searchParams;
 const finalData = {
@@ -45,8 +45,12 @@ if(params.has("code")){
 	
 	finalData.access_token = access_token;
 	finalData.refresh_token = refresh_token;
-	finalData.user.ID = user.data[0].id;
-	finalData.user.name = user.data[0].display_name;
+	if(userGet.status === 200 && user.data.length != 0) {
+		finalData.user.ID = user.data[0].id;
+		finalData.user.name = user.data[0].display_name;
+	}
+	else
+		return Astro.redirect("../?error=unauthorized")
 }
 
 ---
@@ -100,9 +104,9 @@ if(params.has("code")){
 <style>
    .pasteBlock {
 		text-align: left;
-      background-color: rgb(33, 33, 33);
-      border: 1px solid rgb(77, 77, 77);
-		border-radius: 3px;
-		padding: 3px;
+      background-color: rgb(22, 22, 22);
+      border: 2px solid rgb(44, 44, 44);
+		border-radius: 4px;
+		padding: 6px;
    }
 </style>
