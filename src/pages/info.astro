@@ -11,10 +11,7 @@ const params = Astro.url.searchParams;
 const finalData = {
 	access_token: "",
 	refresh_token: "",
-	user: {
-		ID: "",
-		name: "",
-	}
+	user: ""
 }
 
 if(params.has("code")){
@@ -46,8 +43,7 @@ if(params.has("code")){
 	finalData.access_token = access_token;
 	finalData.refresh_token = refresh_token;
 	if(userGet.status === 200 && user.data.length != 0) {
-		finalData.user.ID = user.data[0].id;
-		finalData.user.name = user.data[0].display_name;
+		finalData.user = user.data[0].display_name;
 	}
 	else
 		return Astro.redirect("../?error=unauthorized")
@@ -56,12 +52,11 @@ if(params.has("code")){
 ---
 
 <Layout title="Cheers4J">
-	<h1 id="h1Element">{finalData.user.name}</h1>
+	<h1 id="h1Element">{finalData.user}</h1>
 	<p>
 		Paste this inside <code class="pasteBlock">config/twitch.json</code> in server root folder: <br>
       <p class="pasteBlock">
-         User ID: <strong id="userID">{finalData.user.ID}</strong>
-         <br>Access Token: <strong id="accessToken">{finalData.access_token}</strong>
+         Access Token: <strong id="accessToken">{finalData.access_token}</strong>
          <br>Refresh Token: <strong id="refreshToken">{finalData.refresh_token}</strong>
 		</p>
 	</p>
@@ -78,12 +73,6 @@ if(params.has("code")){
 		if(h1.innerText != "")
 			localStorage.setItem("Name", h1.innerText)
 		h1.innerText = localStorage.getItem("Name") ?? "";
-	}
-
-	if(userID != null){
-		if(userID.innerText != "")
-			localStorage.setItem("ID", userID.innerText)
-		userID.innerText = localStorage.getItem("ID") ?? "";
 	}
 	
 	if(accessToken != null){
