@@ -3,13 +3,13 @@ import type { Subscription } from "../../types/subscription";
 
 const clientID = await import.meta.env.CLIENT_ID;
 
-export const POST: APIRoute = async ({ request }) => {
+export const GET: APIRoute = async ({ params, request }) => {
 	if (request.headers.get("Content-Type") === "application/json") {
 		const params = new URL(request.url).searchParams;
 		const subscribe = await fetch("https://api.twitch.tv/helix/eventsub/subscriptions", {
 			method: "POST",
 			headers: {
-				"Authorization": "Bearer " + params.get("auth"),
+				"Authorization": "Bearer " + params.get("access_token"),
 				"Client-Id": clientID,
 				"Content-type": "application/json"
 			},

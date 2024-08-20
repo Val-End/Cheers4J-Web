@@ -4,7 +4,7 @@ import type { Tokens } from "../../types/tokens";
 const clientID = await import.meta.env.CLIENT_ID;
 const clientSecret = await import.meta.env.CLIENT_SECRET;
 
-export const POST: APIRoute = async ({ request }) => {
+export const GET: APIRoute = async ({ params, request }) => {
 	if (request.headers.get("Content-Type") === "application/json") {
 		const params = new URL(request.url).searchParams;
 		const getNewTokens = await fetch("https://id.twitch.tv/oauth2/token", {
